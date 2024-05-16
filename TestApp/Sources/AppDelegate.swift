@@ -7,6 +7,7 @@
 import Combine
 import UIKit
 
+@available(iOS 16.0, *)
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?

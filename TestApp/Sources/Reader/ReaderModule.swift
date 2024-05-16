@@ -21,6 +21,7 @@ protocol ReaderModuleAPI {
 
 protocol ReaderModuleDelegate: ModuleDelegate {}
 
+@available(iOS 16.0, *)
 final class ReaderModule: ReaderModuleAPI {
     weak var delegate: ReaderModuleDelegate?
     private let books: BookRepository
@@ -75,6 +76,7 @@ final class ReaderModule: ReaderModuleAPI {
     }
 }
 
+@available(iOS 16.0, *)
 extension ReaderModule: ReaderFormatModuleDelegate {
     func presentDRM(for publication: Publication, from viewController: UIViewController) {
         let drmViewController: DRMManagementTableViewController = factory.make(publication: publication, delegate: delegate)

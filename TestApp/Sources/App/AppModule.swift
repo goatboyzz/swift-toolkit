@@ -20,6 +20,7 @@ protocol ModuleDelegate: AnyObject {
 /// Main application module, it:
 /// - owns the sub-modules (library, reader, etc.)
 /// - orchestrates the communication between its sub-modules, through the modules' delegates.
+@available(iOS 16.0, *)
 final class AppModule {
     // App modules
     var library: LibraryModuleAPI!
@@ -52,6 +53,7 @@ final class AppModule {
     }()
 }
 
+@available(iOS 16.0, *)
 extension AppModule: ModuleDelegate {
     func presentAlert(_ title: String, message: String, from viewController: UIViewController) {
         DispatchQueue.main.async {
@@ -76,14 +78,17 @@ extension AppModule: ModuleDelegate {
     }
 }
 
+@available(iOS 16.0, *)
 extension AppModule: LibraryModuleDelegate {
     func libraryDidSelectPublication(_ publication: Publication, book: Book) {
         reader.presentPublication(publication: publication, book: book, in: library.rootViewController)
     }
 }
 
+@available(iOS 16.0, *)
 extension AppModule: ReaderModuleDelegate {}
 
+@available(iOS 16.0, *)
 extension AppModule: OPDSModuleDelegate {
     func opdsDownloadPublication(_ publication: Publication?, at link: Link, sender: UIViewController) async throws -> Book {
         let url = try link.url(relativeTo: publication?.baseURL)

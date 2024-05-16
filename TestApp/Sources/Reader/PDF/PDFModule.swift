@@ -9,6 +9,7 @@ import ReadiumNavigator
 import ReadiumShared
 import UIKit
 
+@available(iOS 16.0, *)
 final class PDFModule: ReaderFormatModule {
     weak var delegate: ReaderFormatModuleDelegate?
 

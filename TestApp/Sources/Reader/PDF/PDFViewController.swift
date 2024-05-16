@@ -11,8 +11,10 @@ import ReadiumShared
 import SwiftUI
 import UIKit
 
+@available(iOS 16.0, *)
 final class PDFViewController: VisualReaderViewController<PDFNavigatorViewController> {
     private let preferencesStore: AnyUserPreferencesStore<PDFPreferences>
+    var editMenuInteraction: UIEditMenuInteraction?
 
     init(
         publication: Publication,
@@ -40,6 +42,24 @@ final class PDFViewController: VisualReaderViewController<PDFNavigatorViewContro
         navigator.delegate = self
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        editMenuInteraction = UIEditMenuInteraction(delegate: self)
+        self.view.addInteraction(editMenuInteraction!)
+
+        let longPress = UILongPressGestureRecognizer(target: self, action: #selector(didLongPress(_:)))
+        longPress.allowedTouchTypes = [UITouch.TouchType.direct.rawValue as NSNumber]
+        self.view.addGestureRecognizer(longPress)
+    }
+
+    @objc func didLongPress(_ recognizer: UIGestureRecognizer) {
+        let location = recognizer.location(in: self.view)
+        let configuration = UIEditMenuConfiguration(identifier: nil, sourcePoint: location)
+
+        editMenuInteraction?.presentEditMenu(with: configuration)
+    }
+
     override func presentUserPreferences() {
         Task {
             let userPrefs = await UserPreferences(
@@ -60,4 +80,25 @@ final class PDFViewController: VisualReaderViewController<PDFNavigatorViewContro
     }
 }
 
+@available(iOS 16.0, *)
 extension PDFViewController: PDFNavigatorDelegate {}
+
+@available(iOS 16.0, *)
+extension PDFViewController: UIEditMenuInteractionDelegate {
+    func editMenuInteraction(_ interaction: UIEditMenuInteraction,
+                             menuFor configuration: UIEditMenuConfiguration,
+                             suggestedActions: [UIMenuElement]) -> UIMenu? {
+        
+        var actions = suggestedActions
+        
+        let customActions = UIMenu(title: "", options: .displayInline, children: [
+            UIAction(title: "chatGPT") { _ in
+                print("chatGPT")
+            },
+        ])
+        
+        actions.append(customActions)
+        
+        return UIMenu(children: actions)
+    }
+}
